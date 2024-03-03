@@ -1,0 +1,3 @@
+[submodule "anomaly_detection/submodules/MNAD"]
+	path = anomaly_detection/submodules/MNAD
+	url = https://github.com/cvlab-yonsei/MNAD.git

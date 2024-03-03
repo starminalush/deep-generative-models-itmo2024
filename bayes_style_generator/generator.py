@@ -27,9 +27,7 @@ class Generation:
 class BayesStyleGenerator:
     def __init__(self, styles, styles_count):
         parameters = self._calculate_proba(styles, styles_count)
-        self._combinations, self._combinations_prod = self._generate_all_combinations(
-            parameters
-        )
+        self._combinations, self._combinations_prod = self._generate_all_combinations(parameters)
 
     def _calculate_proba(self, styles, styles_count):
         parameters = {}
@@ -47,14 +45,8 @@ class BayesStyleGenerator:
 
     def _generate_all_combinations(self, proba):
         all_combinations = list(product(*proba.values()))
-        combinations_proba = [
-            prod([value[1] for value in combination])
-            for combination in all_combinations
-        ]
-        combinations = [
-            ", ".join([value[0] for value in combination])
-            for combination in all_combinations
-        ]
+        combinations_proba = [prod([value[1] for value in combination]) for combination in all_combinations]
+        combinations = [", ".join([value[0] for value in combination]) for combination in all_combinations]
         return combinations, combinations_proba
 
     def _generate(self):

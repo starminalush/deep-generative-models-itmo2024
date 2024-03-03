@@ -24,11 +24,12 @@ class PixelGenerator:
         statistics = {}
         flat_pixels = []
         for filename in self._img_path.iterdir():
-            image = Image.open(filename)
-            image = image.convert("RGB")
+            image = Image.open(filename).convert("RGB")
             flat_pixels.append(np.array(image.getdata()))
         number_of_pixels = self._img_size[0] * self._img_size[1]
+
         flat_pixels = np.asarray(flat_pixels)
+
         for pixel_idx in tqdm(range(number_of_pixels)):
             statistics[pixel_idx] = Counter()
             pixel_from_images = flat_pixels[:, pixel_idx, :]
@@ -36,6 +37,7 @@ class PixelGenerator:
             r_count = Counter(pixel_from_images[:, 0])
             g_count = Counter(pixel_from_images[:, 1])
             b_count = Counter(pixel_from_images[:, 2])
+
             statistics[pixel_idx] = {
                 "R": np.zeros(256),
                 "G": np.zeros(256),
@@ -44,17 +46,11 @@ class PixelGenerator:
 
             for i in range(256):
                 value = r_count.get(i, 0)
-                statistics[pixel_idx]["R"][i] = (
-                    value / sum(r_count.values()) if value != 0 else 0
-                )
+                statistics[pixel_idx]["R"][i] = value / sum(r_count.values()) if value != 0 else 0
                 value = g_count.get(i, 0)
-                statistics[pixel_idx]["G"][i] = (
-                    value / sum(g_count.values()) if value != 0 else 0
-                )
+                statistics[pixel_idx]["G"][i] = value / sum(g_count.values()) if value != 0 else 0
                 value = b_count.get(i, 0)
-                statistics[pixel_idx]["B"][i] = (
-                    value / sum(b_count.values()) if value != 0 else 0
-                )
+                statistics[pixel_idx]["B"][i] = value / sum(b_count.values()) if value != 0 else 0
         return statistics
 
     def _get_img_size(self):
