@@ -1,25 +1,16 @@
-from pathlib import (
-    Path,
-)
-from random import (
-    shuffle,
-)
-from shutil import (
-    copy,
-    rmtree,
-)
+from pathlib import Path
+from random import shuffle
+from shutil import copy, rmtree
 
 import click
-from tqdm import (
-    tqdm,
-)
+from tqdm import tqdm
 
 
 @click.command()
 @click.option("--dataset-path", type=click.Path(path_type=Path))
 @click.option("--output-dataset-path", type=click.Path(path_type=Path))
 @click.option("--ratio", type=float, default=0.85)
-def split_dataset_on_subsets(dataset_path: Path | str, output_dataset_path: Path | str, ratio: float) -> None:
+def split_dataset_on_subsets(dataset_path: Path, output_dataset_path: Path, ratio: float) -> None:
     """Split dataset on train and val subsets.
     Args:
         dataset_path: Initial dataset path.

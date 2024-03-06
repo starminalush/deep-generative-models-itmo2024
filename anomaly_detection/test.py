@@ -1,38 +1,24 @@
-from collections import (
-    defaultdict,
-)
-from pathlib import (
-    Path,
-)
+from collections import defaultdict
+from pathlib import Path
 
 import click
 import lightning as L
 import torch
 import torch.nn.functional as F
-from lightning import (
-    seed_everything,
-)
-from model import (
-    AnomalyDetection,
-)
-from PIL import (
-    Image,
-)
-from pytorch_lightning.loggers import (
-    WandbLogger,
-)
-from sklearn.metrics import (
-    confusion_matrix,
-)
-from torchvision.transforms import (
-    Compose,
-)
-from transforms import (
-    get_test_transforms,
-)
+from lightning import seed_everything
+from model import AnomalyDetection
+from PIL import Image
+from pytorch_lightning.loggers import WandbLogger
+from sklearn.metrics import confusion_matrix
+from torchvision.transforms import Compose
+from transforms import get_test_transforms
 
 torch.manual_seed(42)
 seed_everything(42, workers=True)
+
+import dvc.api
+
+params = dvc.api.params_show()
 
 
 def classify_image(image_path: Path, transform: Compose, model: L.LightningModule) -> int:
@@ -50,9 +36,7 @@ def classify_image(image_path: Path, transform: Compose, model: L.LightningModul
         initial_image = transform(initial_image)
         initial_image = initial_image.unsqueeze(0)
         reconstruction_image = model(initial_image.to("cuda"))[0]
-        return (
-            1 if F.mse_loss(initial_image, reconstruction_image.cpu()) >= 0.0012 else 0
-        )  # тут с графика на втором шаге цифра
+        return 1 if F.mse_loss(initial_image, reconstruction_image.cpu()) >= params["threshold"] else 0
 
 
 @click.command()

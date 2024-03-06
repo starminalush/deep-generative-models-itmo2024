@@ -1,19 +1,11 @@
 import lightning as L
 import torch
 import torch.nn.functional as F
-from lightning.pytorch.utilities.types import (
-    OptimizerLRScheduler,
-)
-from submodules.MNAD.model.Reconstruction import (
-    convAE,
-)
-from torch import (
-    nn,
-    optim,
-)
-from torch.autograd import (
-    Variable,
-)
+from lightning.pytorch.utilities.types import OptimizerLRScheduler
+from torch import nn, optim
+from torch.autograd import Variable
+
+from submodules.MNAD.model.Reconstruction import convAE
 
 
 class AnomalyDetection(L.LightningModule):
@@ -29,8 +21,6 @@ class AnomalyDetection(L.LightningModule):
         image = Variable(batch)
         outputs, separateness_loss, compactness_loss = self.forward(batch)
         loss_pixel = torch.mean(self.loss_func_mse(outputs, image))
-        # args.loss_compact = 0.1
-        # args.locc_separate = 0.1
         loss = loss_pixel + 0.1 * compactness_loss + 0.1 * separateness_loss
         self.log("train_loss", loss)
         return loss
@@ -50,9 +40,7 @@ class AnomalyDetection(L.LightningModule):
 
     def configure_optimizers(self) -> OptimizerLRScheduler:
         params = list(self._model.encoder.parameters()) + list(self._model.decoder.parameters())
-        # args.lr = 2e-4
         optimizer = torch.optim.Adam(params, lr=2e-4)
-        # args.epochs  = 60
         scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=25)
         return [optimizer], [scheduler]
 
@@ -60,8 +48,6 @@ class AnomalyDetection(L.LightningModule):
         image = Variable(batch)
         outputs, separateness_loss, compactness_loss = self.forward(batch)
         loss_pixel = torch.mean(self.loss_func_mse(outputs, image))
-        # args.loss_compact = 0.1
-        # args.locc_separate = 0.1
         loss = loss_pixel + 0.1 * compactness_loss + 0.1 * separateness_loss
         self.log("val_loss", loss)
 
@@ -69,7 +55,5 @@ class AnomalyDetection(L.LightningModule):
         image = Variable(batch)
         outputs, separateness_loss, compactness_loss = self.forward(batch)
         loss_pixel = torch.mean(self.loss_func_mse(outputs, image))
-        # args.loss_compact = 0.1
-        # args.locc_separate = 0.1
         loss = loss_pixel + 0.1 * compactness_loss + 0.1 * separateness_loss
         self.log("test_loss", loss)
