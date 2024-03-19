@@ -1,0 +1,6 @@
+discriminator:
+  ndf: 64
+generator:
+  nz: 100 #latent space
+  ngf: 64
+nc: 3

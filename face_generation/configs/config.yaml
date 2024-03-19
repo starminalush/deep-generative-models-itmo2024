@@ -1,0 +1,6 @@
+defaults:
+  - transforms: defaults
+  - optimizer: adam
+  - models: defaults
+  - wandb: defaults
+  - train

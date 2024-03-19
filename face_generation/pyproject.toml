@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "face-generation"
+version = "0.1.0"
+description = ""
+authors = ["starminalush <alica154323@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+torch = "^2.2.1"
+torchvision = "^0.17.1"
+gdown = "^5.1.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
