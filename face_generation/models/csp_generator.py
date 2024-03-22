@@ -32,7 +32,6 @@ class CSPUPBlock(nn.Module):
             nn.ConvTranspose2d(
                 nfg1, nfg1, kernel_size=4, stride=2, padding=1, bias=False
             ),
-            nn.BatchNorm2d(nfg1),
             # # state ``nfg1, 8,8,
             #
             nn.Conv2d(nfg1, int(nfg1 / 2), kernel_size=3, padding=1, bias=False),

@@ -1,5 +1,5 @@
 discriminator:
-  ndf: 128
+  ndf: 32
 generator:
   nz: 100 #latent space
   ngf: 128

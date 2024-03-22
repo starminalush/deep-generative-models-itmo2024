@@ -8,6 +8,7 @@ import torch.optim as optim
 import torchvision.utils as vutils
 import wandb
 from omegaconf import DictConfig
+from torch.optim import lr_scheduler
 from torch.utils.data import DataLoader
 from torchvision.datasets import CelebA
 
@@ -65,7 +66,8 @@ def train(cfg: DictConfig):
     # Setup Adam optimizer_d for both G and D
     optimizerD = optim.Adam(discriminator.parameters(), **cfg["optimizer_d"])
     optimizerG = optim.Adam(generator.parameters(), **cfg["optimizer_g"])
-
+    schedulerD = lr_scheduler.StepLR(optimizerD, step_size=5, gamma=0.5)
+    schedulerG = lr_scheduler.StepLR(optimizerG, step_size=5, gamma=0.5)
     # Training Loop
 
     # Lists to keep track of progress
@@ -153,12 +155,14 @@ def train(cfg: DictConfig):
             wandb.log({"d_loss": errD})
 
             # Check how the generator is doing by saving G's output on fixed_noise
-            if (iters % 500 == 0) or ((i == len(dataloader) - 1)):
+            if (iters % 50 == 0) or ((i == len(dataloader) - 1)):
                 with torch.no_grad():
                     fake = generator(fixed_noise).detach().cpu()
                 grid = vutils.make_grid(fake, padding=2, normalize=True)
                 wandb.log({"generated": [wandb.Image(grid)]})
             iters += 1
+        schedulerD.step()
+        schedulerG.step()
     wandb.finish(quiet=True)
 
 
