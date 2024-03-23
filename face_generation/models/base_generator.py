@@ -3,7 +3,7 @@ import torch.nn as nn
 
 class Generator(nn.Module):
     def __init__(self, nz, ngf, nc):
-        super().__init__()
+        super(Generator, self).__init__()
         self.main = nn.Sequential(
             # input is Z, going into a convolution
             nn.ConvTranspose2d(nz, ngf * 16, 4, 1, 0, bias=False),

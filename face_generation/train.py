@@ -8,15 +8,14 @@ import torch.optim as optim
 import torchvision.utils as vutils
 import wandb
 from omegaconf import DictConfig
-from torch.optim import lr_scheduler
 from torch.utils.data import DataLoader
 from torchvision.datasets import CelebA
 
 from face_generation.dataset_transforms import get_transforms
-from face_generation.models.base_discriminator import Discriminator
 
-# from face_generation.models.base_generator import Generator
-from face_generation.models.csp_generator import CSPGenerator as Generator
+from face_generation.models.base_discriminator import Discriminator
+from face_generation.models.base_generator import Generator
+
 from face_generation.models.utils import weights_init
 
 RANDOM_SEED = 42
@@ -66,8 +65,6 @@ def train(cfg: DictConfig):
     # Setup Adam optimizer_d for both G and D
     optimizerD = optim.Adam(discriminator.parameters(), **cfg["optimizer_d"])
     optimizerG = optim.Adam(generator.parameters(), **cfg["optimizer_g"])
-    schedulerD = lr_scheduler.StepLR(optimizerD, step_size=5, gamma=0.5)
-    schedulerG = lr_scheduler.StepLR(optimizerG, step_size=5, gamma=0.5)
     # Training Loop
 
     # Lists to keep track of progress
@@ -161,8 +158,6 @@ def train(cfg: DictConfig):
                 grid = vutils.make_grid(fake, padding=2, normalize=True)
                 wandb.log({"generated": [wandb.Image(grid)]})
             iters += 1
-        schedulerD.step()
-        schedulerG.step()
     wandb.finish(quiet=True)
 
 

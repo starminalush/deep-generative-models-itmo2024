@@ -3,7 +3,7 @@ import torch.nn as nn
 
 class Discriminator(nn.Module):
     def __init__(self, nc, ndf):
-        super().__init__()
+        super(Discriminator, self).__init__()
         self.main = nn.Sequential(
             # input is (nc) x 128 x 128
             nn.Conv2d(nc, ndf, 4, stride=2, padding=1, bias=False),
