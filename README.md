@@ -18,8 +18,6 @@ num_epochs: 10 (планировалось, но обучение сразу р�
 img_size: 128
 optimizer: Adam c lr = 0.001 для генератора и дискриминатора
 
-
-
 ### Результат обучения
 График лоссов генератора и дискриминатора
 ![image](https://github.com/starminalush/deep-generative-models-itmo2024/assets/103132748/92323b86-9c04-424f-80b3-c8acdf769c5f)
@@ -27,3 +25,43 @@ optimizer: Adam c lr = 0.001 для генератора и дискримина
 Результат генерации
 
 ![image](https://github.com/starminalush/deep-generative-models-itmo2024/assets/103132748/d9b02712-62b6-4381-9c1f-111d47055feb)
+
+### Вывод:
+В такой форме модели не сойдутся, нужно добавить что-то генератору для стабильности
+
+## 1. Гипотеза: замена ReLU на Tanh в последнем слое генератора и добавление BatchNorm улучшит сходимость моделей и позволит добиться лучшего качества генерации лиц.
+
+Модель:
+
+Код модели генератора и CSPUp блока представлен в файле [csp_generator.py](https://github.com/starminalush/deep-generative-models-itmo2024/blob/83b3eb8fd329ae049096af28f6dab1675b0d1bb5/face_generation/models/csp_generator.py).
+
+### Параметры обучения
+batch_size: 64
+num_epochs: 10 
+img_size: 128
+optimizer: Adam c lr = 0.001 для генератора и дискриминатора
+
+### Результат обучения
+График лоссов генератора и дискриминатора
+![image](https://github.com/starminalush/deep-generative-models-itmo2024/assets/103132748/148d8838-179e-4d7a-99ea-1facafdb160e)
+
+На середине обучения лосс генератора резко скакнул вверх, но потом снова упал. Качество генераций при этом сильно ухудшилось. С чем это связано, я пока не поняла
+
+
+Результат генерации в начале обучения
+
+![image](https://github.com/starminalush/deep-generative-models-itmo2024/assets/103132748/78381264-1f00-4b5d-87f9-f8f8a3bc6f4d)
+
+Результат генерации, когда скакнул лосс генератора в середине обучения
+
+![image](https://github.com/starminalush/deep-generative-models-itmo2024/assets/103132748/695a47f3-553d-45c9-9f20-ed3777d216d3)
+
+Результат генерации в конце обучения
+
+![image](https://github.com/starminalush/deep-generative-models-itmo2024/assets/103132748/0b79cadc-32d8-47cb-bf29-7ac0f0568a93)
+
+
+### Вывод:
+Словила mode collapse, много одинаковых лиц. Возможно, стоит замедлить работу дискриминатора
+
+
