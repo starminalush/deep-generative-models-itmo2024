@@ -25,4 +25,5 @@ optimizer: Adam c lr = 0.001 для генератора и дискримина
 ![image](https://github.com/starminalush/deep-generative-models-itmo2024/assets/103132748/92323b86-9c04-424f-80b3-c8acdf769c5f)
 
 Результат генерации
+
 ![image](https://github.com/starminalush/deep-generative-models-itmo2024/assets/103132748/d9b02712-62b6-4381-9c1f-111d47055feb)
