@@ -53,14 +53,3 @@ class CSPUPBlock(nn.Module):
         feature_map_0_after = self.deconv(feature_map_0)
         result = feature_map_0_after + feature_map_1_after
         return result
-
-
-if __name__ == "__main__":
-    fixed_noise = torch.randn(
-        64,
-        100,
-        1,
-        1,
-    )
-    t = CSPGenerator(100, 128, 3)(fixed_noise)
-    print(t.shape)
