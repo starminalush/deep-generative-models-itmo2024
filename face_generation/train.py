@@ -11,10 +11,12 @@ from omegaconf import DictConfig
 from torch.utils.data import DataLoader
 from torchvision.datasets import CelebA
 
-from face_generation.dataset_transforms import get_transforms
-from face_generation.models.base_discriminator import Discriminator
-from face_generation.models.csp_generator import CSPGenerator as Generator
-from face_generation.models.utils import weights_init
+from dataset_transforms import get_transforms
+
+from models.base_discriminator import Discriminator
+from models.csp_generator import CSPGenerator as Generator
+
+from models.utils import weights_init
 
 RANDOM_SEED = 42
 
