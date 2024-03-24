@@ -5,7 +5,9 @@ import torch.nn as nn
 class CSPGenerator(nn.Module):
     def __init__(self, nz, ngf, nc):
         super().__init__()
-        self.first_deconv = nn.ConvTranspose2d(nz, ngf * 8, 4, 1, 0, bias=False)
+        self.first_deconv = nn.Sequential(
+            nn.ConvTranspose2d(nz, ngf * 8, 4, 1, 0, bias=False),
+        )
         self.cspup_block = nn.Sequential(
             CSPUPBlock(ngf * 4),
             CSPUPBlock(ngf * 2),
@@ -13,7 +15,10 @@ class CSPGenerator(nn.Module):
             CSPUPBlock(int(ngf / 2)),
         )
         self.outer_layer = nn.Sequential(
-            nn.ConvTranspose2d(int(ngf / 2), nc, 4, 2, 1, bias=False), nn.ReLU(True)
+            nn.ConvTranspose2d(
+                in_channels=64, out_channels=nc, kernel_size=4, stride=2, padding=1
+            ),
+            nn.ReLU(),
         )
 
     def forward(self, x):
@@ -24,23 +29,17 @@ class CSPGenerator(nn.Module):
 
 
 class CSPUPBlock(nn.Module):
-    def __init__(self, nfg1):
+    def __init__(self, ngf):
         super().__init__()
         self.main = nn.Sequential(
-            nn.Conv2d(nfg1, nfg1, kernel_size=1, bias=False),
-            nn.ReLU(True),
-            nn.ConvTranspose2d(
-                nfg1, nfg1, kernel_size=4, stride=2, padding=1, bias=False
-            ),
-            # # state ``nfg1, 8,8,
-            #
-            nn.Conv2d(nfg1, int(nfg1 / 2), kernel_size=3, padding=1, bias=False),
-            nn.ReLU(True),
-            nn.Conv2d(int(nfg1 / 2), nfg1, kernel_size=3, padding=1, bias=False),
+            nn.Conv2d(ngf, ngf, kernel_size=1, padding=0, stride=1),
+            nn.ReLU(),
+            nn.ConvTranspose2d(ngf, ngf, kernel_size=2, stride=2, padding=0),
+            nn.Conv2d(ngf, ngf, kernel_size=3, padding=1, stride=1),
+            nn.ReLU(),
+            nn.Conv2d(ngf, ngf, kernel_size=3, padding=1, stride=1),
         )
-        self.deconv = nn.ConvTranspose2d(
-            nfg1, nfg1, kernel_size=4, stride=2, padding=1, bias=False
-        )
+        self.deconv = nn.ConvTranspose2d(ngf, ngf, kernel_size=2, stride=2, padding=0)
 
     def forward(self, x):
         split_feature_maps = torch.split(x, int(x.size(1) / 2), dim=1)
@@ -60,5 +59,4 @@ if __name__ == "__main__":
         1,
     )
     t = CSPGenerator(100, 128, 3)(fixed_noise)
-    print("___")
     print(t.shape)
