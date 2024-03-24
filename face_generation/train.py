@@ -57,8 +57,8 @@ def train(cfg: DictConfig):
     )
 
     # Establish convention for real and fake labels during training
-    real_label = random.uniform(0.7, 1)
-    fake_label = random.uniform(0, 0.3)
+    real_label = 1.
+    fake_label = 0.
 
     # Setup Adam optimizer_d for both G and D
     optimizerD = optim.Adam(discriminator.parameters(), **cfg["optimizer_d"])
