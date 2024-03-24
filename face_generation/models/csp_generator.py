@@ -9,7 +9,7 @@ class CSPGenerator(nn.Module):
             nn.ConvTranspose2d(nz, ngf * 8, 4, 1, 0, bias=False),
             nn.BatchNorm2d(ngf * 8),
             nn.ReLU(True),
-            )
+        )
         self.cspup_block = nn.Sequential(
             CSPUPBlock(ngf * 4),
             CSPUPBlock(ngf * 2),
@@ -17,8 +17,10 @@ class CSPGenerator(nn.Module):
             CSPUPBlock(int(ngf / 2)),
         )
         self.outer_layer = nn.Sequential(
-            nn.ConvTranspose2d(in_channels=64, out_channels=3, kernel_size=4, stride=2, padding=1),
-            nn.Tanh()
+            nn.ConvTranspose2d(
+                in_channels=64, out_channels=nc, kernel_size=4, stride=2, padding=1
+            ),
+            nn.Tanh(),
         )
 
     def forward(self, x):
@@ -35,17 +37,13 @@ class CSPUPBlock(nn.Module):
             nn.Conv2d(ngf, ngf, kernel_size=1, padding=0, stride=1),
             nn.BatchNorm2d(ngf),
             nn.ReLU(),
-            nn.ConvTranspose2d(
-                ngf, ngf, kernel_size=2, stride=2, padding=0
-            ),
+            nn.ConvTranspose2d(ngf, ngf, kernel_size=2, stride=2, padding=0),
             nn.Conv2d(ngf, ngf, kernel_size=3, padding=1, stride=1),
             nn.BatchNorm2d(ngf),
             nn.ReLU(),
             nn.Conv2d(ngf, ngf, kernel_size=3, padding=1, stride=1),
         )
-        self.deconv = nn.ConvTranspose2d(
-            ngf, ngf, kernel_size=2, stride=2, padding=0
-        )
+        self.deconv = nn.ConvTranspose2d(ngf, ngf, kernel_size=2, stride=2, padding=0)
 
     def forward(self, x):
         split_feature_maps = torch.split(x, int(x.size(1) / 2), dim=1)
